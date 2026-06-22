@@ -1,14 +1,17 @@
 import { MoreVertical, MessageCircle, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { getOrCreateConversation } from "../../services/conversationService";
 interface ContactProps {
   id: string;
+  userId: string;
   name: string;
   nexaId: string;
-  onDelete:(id:string)=> void
+  onDelete: (id: string) => void;
 }
 
-const ContactItem = ({ id, name, nexaId,onDelete }: ContactProps) => {
+const ContactItem = ({ id, userId, name, nexaId, onDelete }: ContactProps) => {
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -23,6 +26,13 @@ const ContactItem = ({ id, name, nexaId,onDelete }: ContactProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleChat = async () => {
+    console.log("Clicked");
+    const data = await getOrCreateConversation(userId);
+console.log(data);
+    navigate(`/chat/${data.conversation._id}`);
+  };
   return (
     <div className="group flex items-center gap-4 p-4 rounded-2xl hover:bg-[#151E16] transition-all cursor-pointer">
       {/* Avatar */}
@@ -42,7 +52,10 @@ const ContactItem = ({ id, name, nexaId,onDelete }: ContactProps) => {
 
       {/* Hover Actions */}
       <div className="flex items-center gap-2 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200">
-        <button className="p-2 text-[#8B9389] hover:text-[#25D366]">
+        <button
+          className="p-2 text-[#8B9389] hover:text-[#25D366]"
+          onClick={handleChat}
+        >
           <MessageCircle size={18} />
         </button>
 
@@ -64,7 +77,10 @@ const ContactItem = ({ id, name, nexaId,onDelete }: ContactProps) => {
                     bg-[#151E16]
                     shadow-xl z-50"
             >
-              <button className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-[#253126]" onClick={()=>onDelete(id)}>
+              <button
+                className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-[#253126]"
+                onClick={() => onDelete(id)}
+              >
                 <Trash2 size={16} />
                 Delete Contact
               </button>

@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    senderId: {
+    conversationId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Conversation",
       required: true,
     },
 
-    receiverId: {
+    senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -23,7 +23,11 @@ const messageSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    delivered: {
+      type: Boolean,
 
+      default: false,
+    },
     isSeen: {
       type: Boolean,
       default: false,

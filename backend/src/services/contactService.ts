@@ -33,6 +33,10 @@ export class ContactService {
   }
 
   async deleteContacts(id:string){
-  return await this.contactRepo.deleteContact(id);
+    console.log('fsdfsdds')
+  const deleted = await this.contactRepo.deleteContact(id);
+ console.log("Deleted:", deleted);
+
+ return deleted;
   }
 }

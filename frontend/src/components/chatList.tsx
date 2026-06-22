@@ -1,35 +1,39 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { GetRecentChats } from "../services/chatService";
+import { getConversations } from "../services/conversationService";
 import ChatCard from "./buttens/chatCard";
+import { useNavigate, useParams } from "react-router-dom";
 
-type User = {
-  id: number;
-  name: string;
-  avatar: string;
+type Conversation = {
+  conversationId: string;
+
+  user: {
+    _id: string;
+    name: string;
+    profilePic: string;
+  };
+
   lastMessage: string;
+
   time: string;
 };
-type ChatListProps = {
-  selectedId: User | null;
-  setSelectedId: React.Dispatch<React.SetStateAction<User | null>>;
-};
-function ChatList({ selectedId, setSelectedId }: ChatListProps) {
-  const [users, setUsers] = useState<User[]>([]);
 
+function ChatList() {
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const navigate = useNavigate();
+
+  const { conversationId } = useParams();
+  console.log("Current URL conversationId:", conversationId);
+
+  console.log("State conversations:", conversations);
   useEffect(() => {
     const loadChats = async () => {
       try {
-        console.log("Calling API...");
+        const data = await getConversations();
+        console.log("Full response:", data);
 
-        const data = await GetRecentChats();
-
-        console.log("Response:", data);
-        console.log(data);
-        console.log("Response:", data);
-        console.log("Type:", typeof data);
-        console.log("Is Array:", Array.isArray(data));
-       setUsers(Array.isArray(data.message) ? data.message : []);
+        console.log("Conversations array:", data.conversations);
+        setConversations(data.conversations || []);
       } catch (error) {
         console.error(error);
       }
@@ -68,12 +72,12 @@ function ChatList({ selectedId, setSelectedId }: ChatListProps) {
           Recent Conversations
         </h4>
       </div>
-      {users.map((user) => (
+      {conversations.map((conversation) => (
         <ChatCard
-          key={user.id}
-          user={user}
-          selected={selectedId?.id === user.id}
-          onClick={() => setSelectedId(user)}
+          key={conversation.conversationId}
+          conversation={conversation}
+          selected={conversationId === conversation.conversationId}
+          onClick={() => navigate(`/chat/${conversation.conversationId}`)}
         />
       ))}
     </div>

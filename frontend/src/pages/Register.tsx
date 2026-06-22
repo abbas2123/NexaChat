@@ -4,7 +4,7 @@ import { User, Mail, Lock, ShieldCheck, ArrowRight } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import { registerUser } from "../services/authService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { showSuccess, showError } from "../utils/alert";
 
 const RegisterScreen = () => {
@@ -65,10 +65,11 @@ const RegisterScreen = () => {
       });
       if (response.success) {
         localStorage.setItem("token", response.token);
+        localStorage.setItem("userId", response.user.id);
         showSuccess("Account created successfully!");
 
         setTimeout(() => {
-          navigate("/chat",{replace:true});
+          navigate("/chat", { replace: true });
         }, 1500);
       }
     } catch (error: any) {
@@ -76,13 +77,13 @@ const RegisterScreen = () => {
       console.log(error.response?.data?.message);
     }
   };
-    useEffect(()=>{
-      const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-      if (token) {
-        navigate('/chat');
-      }
-    },[navigate])
+    if (token) {
+      navigate("/chat");
+    }
+  }, [navigate]);
   return (
     <div className="min-h-screen bg-[#0D150E] flex flex-col items-center justify-center p-6 font-geist selection:bg-primary/30">
       {/* Brand Header */}

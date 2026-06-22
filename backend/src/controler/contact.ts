@@ -39,6 +39,7 @@ export const saveContact = async (req: AuthRequest, res: Response) => {
 
 export const getContacts = async (req: AuthRequest, res: Response) => {
   try {
+    console.log("sdsd");
     const ownerId = req.userId;
 
     if (!ownerId) {
@@ -64,8 +65,10 @@ export const getContacts = async (req: AuthRequest, res: Response) => {
 
 export const deleteContact = async (req: AuthRequest, res: Response) => {
   try {
-    console.log('fddssdsd')
+    console.log("fddssdsd");
     const { id } = req.params;
+
+    console.log("Deleting contact:", id);
     if (Array.isArray(id)) {
       return res.status(400).json({
         success: false,
@@ -73,7 +76,15 @@ export const deleteContact = async (req: AuthRequest, res: Response) => {
         message: "Invalid contact id",
       });
     }
-    await contactService.deleteContacts(id);
+    const deleted = await contactService.deleteContacts(id);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+
+        message: "Contact not found",
+      });
+    }
 
     res.status(200).json({
       success: true,

@@ -5,6 +5,7 @@ import ContactSaveModal from "./contacts/contactSaveModal";
 import toast from "react-hot-toast";
 import ContactItem from "./contacts/contactItems";
 import Swal from "sweetalert2";
+import { getCurrentUser } from "../services/authService";
 type Contact = {
   _id: string;
   contactId: {
@@ -14,15 +15,25 @@ type Contact = {
     nexaId: number;
   };
 };
+type CurrentUser = {
+  _id: string;
+
+  name: string;
+
+  profilePic: string;
+};
 const ContactDirectory = () => {
   const [contact, setcontact] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModal, setIsModal] = useState<boolean>(false);
 
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+
   useEffect(() => {
     const loadContacts = async () => {
       try {
         const response = await contacts();
+        // console.log('response',response);
         setcontact(response.contacts);
       } catch (error) {
         console.error("Failed to load contacts:", error);
@@ -68,6 +79,20 @@ const ContactDirectory = () => {
       toast.error("Failed to delete contact:", error);
     }
   };
+
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const data = await getCurrentUser();
+
+        setCurrentUser(data.user);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadCurrentUser();
+  }, []);
   return (
     <div className="flex-1 w-full h-full flex flex-col">
       {/* Header Section */}
@@ -95,8 +120,12 @@ const ContactDirectory = () => {
             </button>
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-[#333B33] cursor-pointer">
               <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=80"
-                alt="Me"
+                src={
+                  currentUser?.profilePic
+                    ? `http://localhost:3000${currentUser.profilePic}`
+                    : "https://ui-avatars.com/api/?name=User"
+                }
+                alt={currentUser?.name || "Me"}
               />
             </div>
           </div>
@@ -127,6 +156,7 @@ const ContactDirectory = () => {
             <ContactItem
               key={con._id}
               id={con._id}
+              userId={con.contactId._id}
               name={con.contactId.name}
               nexaId={String(con.contactId.nexaId)}
               onDelete={handleDelete}

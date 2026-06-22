@@ -27,11 +27,11 @@ export class AuthService {
     if (!user) {
       throw new Error("User not Found");
     }
-if(!user.nexaId){
-  const nexaId = await this.generateUniqueNexaId();
-  user.nexaId = nexaId
-  await user.save();
-}
+    if (!user.nexaId) {
+      const nexaId = await this.generateUniqueNexaId();
+      user.nexaId = nexaId;
+      await user.save();
+    }
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -109,6 +109,18 @@ if(!user.nexaId){
         email: user.email,
         nexaId: user.nexaId,
       },
+    };
+  }
+  async getCurrentUser(userId: string) {
+    const user = await this.userRepo.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return {
+      success: true,
+      user,
     };
   }
 }

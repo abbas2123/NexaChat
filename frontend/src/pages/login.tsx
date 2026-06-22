@@ -19,7 +19,7 @@ const AuthScreen = () => {
         const response = await googleLoginUser(tokenResponse.access_token);
 
         localStorage.setItem("token", response.token);
-
+        localStorage.setItem("userId", response.user.id);
         showSuccess("Google Login Successful!");
 
         navigate("/chat");
@@ -44,7 +44,7 @@ const AuthScreen = () => {
       console.log(response);
       if (response.success) {
         localStorage.setItem("token", response.token);
-
+        localStorage.setItem("userId", response.user.id);
         showSuccess("Login successful!");
 
         setTimeout(() => {

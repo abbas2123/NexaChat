@@ -1,4 +1,4 @@
-import { Share2, Plus, LogOut } from "lucide-react";
+import { Share2, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { User } from "../../types/userType";

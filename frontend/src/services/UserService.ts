@@ -28,18 +28,19 @@ export const updateProfile = async (formData: FormData) => {
 
 export const contacts = async () => {
   try {
+    console.log("fddssdvsdv");
     const response = await api.get("/contact");
-
+    console.log("responsesssss", response);
     return response.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const saveContact = async (nexaId:number) => {
+export const saveContact = async (nexaId: number) => {
   try {
-    const response = await api.post("/contact/save", {nexaId});
-console.log(response);
+    const response = await api.post("/contact/save", { nexaId });
+    console.log(response);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -47,13 +48,14 @@ console.log(response);
   }
 };
 
-export const deleteContact = async (id:string) =>{
+export const deleteContact = async (id: string) => {
   try {
     const response = await api.delete(`/contact/delete/${id}`);
 
     return response.data;
   } catch (error) {
-    console.log("error",error);
+    console.log("error", error);
     throw error;
   }
-}
+};
+
